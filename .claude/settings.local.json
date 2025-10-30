@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bun add:*)",
+      "Bash(bunx shadcn@latest add:*)",
+      "Bash(bun lint:*)"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "shadcn",
+    "nuxt-ui",
+    "Better Auth",
+    "supabase"
+  ]
+}

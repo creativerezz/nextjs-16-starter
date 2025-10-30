@@ -1,0 +1,355 @@
+# Next.js 16 + shadcn/ui Development Rules
+
+## Layout & Spacing
+
+### Container Pattern
+- Always use the `Container` component from `@/components/container` for page-level sections
+- Container includes responsive padding: `px-4 sm:px-6 lg:px-8`
+- For custom containers, always use the same padding pattern
+
+```tsx
+// ✅ Good
+import { Container } from "@/components/container"
+
+<Container>
+  <YourContent />
+</Container>
+
+// ✅ Also acceptable
+<div className="container max-w-screen-2xl px-4 sm:px-6 lg:px-8">
+  <YourContent />
+</div>
+
+// ❌ Bad - inconsistent padding
+<div className="px-16">
+  <YourContent />
+</div>
+```
+
+### Responsive Padding
+- Mobile (default): `px-4` (1rem / 16px)
+- Small screens (sm: 640px+): `px-6` (1.5rem / 24px)
+- Large screens (lg: 1024px+): `px-8` (2rem / 32px)
+
+### Vertical Spacing
+- Use reasonable vertical padding: `py-8`, `py-12`, `py-16`
+- Avoid excessive padding like `py-32` that wastes mobile space
+
+## Colors & Theming
+
+### Always Use Theme Tokens
+Never use hardcoded colors. Always use Tailwind theme tokens that respect light/dark mode.
+
+```tsx
+// ✅ Good - Uses theme tokens
+<div className="bg-background text-foreground">
+<h1 className="text-foreground">
+<p className="text-muted-foreground">
+<button className="bg-primary text-primary-foreground hover:bg-primary/90">
+
+// ❌ Bad - Hardcoded colors
+<div className="bg-white dark:bg-black text-black dark:text-white">
+<div className="bg-zinc-50 dark:bg-zinc-900">
+<button className="bg-blue-500 hover:bg-blue-600">
+```
+
+### Available Theme Tokens
+
+#### Background & Text
+- `bg-background` / `text-foreground` - Main background and text
+- `bg-card` / `text-card-foreground` - Card backgrounds
+- `bg-popover` / `text-popover-foreground` - Popover backgrounds
+- `text-muted-foreground` - Secondary/muted text
+
+#### Interactive Elements
+- `bg-primary` / `text-primary-foreground` - Primary buttons/actions
+- `bg-secondary` / `text-secondary-foreground` - Secondary buttons
+- `bg-accent` / `text-accent-foreground` - Hover states and accents
+- `bg-destructive` / `text-destructive-foreground` - Destructive actions
+
+#### Borders & Inputs
+- `border-border` - Default borders
+- `border-input` - Form input borders
+- `ring-ring` - Focus rings
+
+#### State Modifiers
+- Use opacity modifiers for hover states: `hover:bg-primary/90`
+- Never use hardcoded hex values for hover: `hover:bg-[#383838]`
+
+## Navigation & Links
+
+### Next.js Link Component
+Always use the `Link` component from `next/link` for both internal and external links.
+
+```tsx
+// ✅ Good - Internal link
+import Link from "next/link"
+
+<Link href="/about">About</Link>
+
+// ✅ Good - External link
+<Link
+  href="https://example.com"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  External Link
+</Link>
+
+// ❌ Bad - Using <a> tag
+<a href="/about">About</a>
+<a href="https://example.com">External</a>
+```
+
+### Link Styling Pattern
+For inline text links, use this pattern:
+
+```tsx
+<Link
+  href="/path"
+  className="font-medium text-foreground underline underline-offset-4 hover:text-primary"
+>
+  Link Text
+</Link>
+```
+
+## Component Patterns
+
+### Import Order
+1. React and Next.js imports
+2. Third-party libraries
+3. Local components
+4. Utilities and helpers
+5. Types
+
+```tsx
+// ✅ Good
+import { useState } from "react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Container } from "@/components/container"
+import { cn } from "@/lib/utils"
+import type { ComponentProps } from "./types"
+
+// ❌ Bad - Random order
+import { cn } from "@/lib/utils"
+import Link from "next/link"
+import type { ComponentProps } from "./types"
+import { useState } from "react"
+```
+
+### Client vs Server Components
+- Use Server Components by default (no "use client")
+- Only add "use client" when you need:
+  - React hooks (useState, useEffect, etc.)
+  - Event handlers
+  - Browser APIs
+  - Third-party libraries that require client-side
+
+```tsx
+// ✅ Good - Server Component (default)
+export function StaticContent() {
+  return <div>Static content</div>
+}
+
+// ✅ Good - Client Component (when needed)
+"use client"
+
+import { useState } from "react"
+
+export function InteractiveContent() {
+  const [count, setCount] = useState(0)
+  return <button onClick={() => setCount(count + 1)}>{count}</button>
+}
+```
+
+## shadcn/ui Components
+
+### Adding Components
+Use Bun to add shadcn/ui components:
+
+```bash
+bunx shadcn@latest add <component-name>
+```
+
+### Component Usage
+- Import from `@/components/ui/*`
+- Never modify shadcn/ui component files directly
+- For customization, create wrapper components
+
+```tsx
+// ✅ Good
+import { Button } from "@/components/ui/button"
+
+<Button variant="outline">Click me</Button>
+
+// ✅ Good - Custom wrapper
+import { Button } from "@/components/ui/button"
+
+export function PrimaryButton(props: ButtonProps) {
+  return <Button variant="default" {...props} />
+}
+```
+
+### Conditional Classes
+Always use the `cn()` utility for conditional classes:
+
+```tsx
+import { cn } from "@/lib/utils"
+
+// ✅ Good
+<div className={cn(
+  "base-classes",
+  isActive && "active-classes",
+  className
+)}>
+
+// ❌ Bad - String concatenation
+<div className={`base-classes ${isActive ? 'active-classes' : ''} ${className}`}>
+```
+
+## Responsive Design
+
+### Tailwind Breakpoints
+- `sm:` - 640px and up
+- `md:` - 768px and up
+- `lg:` - 1024px and up
+- `xl:` - 1280px and up
+- `2xl:` - 1536px and up
+
+### Mobile-First Approach
+Always design mobile-first, then add larger breakpoints:
+
+```tsx
+// ✅ Good - Mobile first
+<div className="flex flex-col md:flex-row">
+<div className="text-sm md:text-base lg:text-lg">
+
+// ❌ Bad - Desktop first
+<div className="flex-row sm:flex-col">
+```
+
+## TypeScript
+
+### Component Props
+Always define prop types with TypeScript interfaces:
+
+```tsx
+// ✅ Good
+interface ButtonProps {
+  children: React.ReactNode
+  variant?: "default" | "outline"
+  onClick?: () => void
+}
+
+export function Button({ children, variant = "default", onClick }: ButtonProps) {
+  // ...
+}
+
+// ❌ Bad - No types
+export function Button({ children, variant, onClick }) {
+  // ...
+}
+```
+
+### Async/Await in Next.js 16
+Remember: cookies(), headers(), and params are now async in Next.js 16
+
+```tsx
+// ✅ Good - Next.js 16
+const cookieStore = await cookies()
+const headersList = await headers()
+
+// ❌ Bad - Next.js 15 syntax (doesn't work in 16)
+const cookieStore = cookies()
+const headersList = headers()
+```
+
+## File Organization
+
+### Component Files
+- One component per file
+- Component file names should match component names in kebab-case
+- Place in appropriate directory:
+  - `components/ui/` - shadcn/ui components
+  - `components/` - Custom reusable components
+  - `app/` - Page-specific components (if not reusable)
+
+```
+components/
+├── ui/           # shadcn/ui components (managed by CLI)
+├── header.tsx    # Reusable components
+├── footer.tsx
+├── container.tsx
+└── mode-toggle.tsx
+```
+
+## Package Management
+
+### Always Use Bun
+Never use npm, yarn, or pnpm in this project:
+
+```bash
+# ✅ Good
+bun install
+bun add <package>
+bun remove <package>
+bun dev
+bun build
+
+# ❌ Bad
+npm install
+yarn add <package>
+pnpm install
+```
+
+## Performance
+
+### Image Optimization
+Always use Next.js Image component:
+
+```tsx
+// ✅ Good
+import Image from "next/image"
+
+<Image
+  src="/image.png"
+  alt="Description"
+  width={500}
+  height={300}
+  priority // for above-the-fold images
+/>
+
+// ❌ Bad
+<img src="/image.png" alt="Description" />
+```
+
+### Font Loading
+Fonts are already configured in the root layout with Geist Sans and Geist Mono. Don't add duplicate font imports.
+
+## Git & Commits
+
+### What to Commit
+- ✅ Source code changes
+- ✅ Configuration files
+- ✅ Lock files (bun.lock)
+
+### What NOT to Commit
+- ❌ .env files (use .env.example instead)
+- ❌ node_modules/
+- ❌ .next/
+- ❌ dist/ or build/
+
+## Summary
+
+**Golden Rules:**
+1. Use theme tokens, never hardcoded colors
+2. Use responsive padding pattern: `px-4 sm:px-6 lg:px-8`
+3. Use Container component for consistent spacing
+4. Always use Link component from next/link
+5. Mobile-first responsive design
+6. Use Bun for all package operations
+7. Server Components by default, Client Components only when needed
+8. TypeScript for all component props
+9. Use cn() utility for conditional classes
+10. Remember Next.js 16 async APIs (cookies, headers, params)
