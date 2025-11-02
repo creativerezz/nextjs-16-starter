@@ -204,6 +204,26 @@ This project follows strict development guidelines documented in `.cursorrules`.
 
 See `.cursorrules` for complete guidelines.
 
+## Documentation References
+
+The `/LLMS` directory contains comprehensive documentation for the technologies used in this project:
+
+### AI SDK
+- `ai-6sdk-vercel.md` - AI SDK 6 Beta documentation with agent abstractions, tool execution approval, structured output, reranking support, and more
+
+### shadcn/ui
+- `shadcn.txt` - Complete shadcn/ui documentation index
+- `shadcn/intro.md` - Introduction to shadcn/ui principles and overview
+- `shadcn/cli.md` - Command-line tool documentation for installing and managing components
+- `shadcn/nextjs.md` - Installation and configuration guide for Next.js projects
+- `shadcn/theming.md` - Theming guide for customizing colors, typography, and design tokens
+- `shadcn/dark-mode.md` - Dark mode implementation and configuration
+- `shadcn/monorepo.md` - Using shadcn/ui in monorepo setups
+- `shadcn/registry.md` - Registry system documentation for publishing and distributing components
+- `shadcn/mcp.md` - Model Context Protocol integration for AI-assisted component discovery
+
+These files provide comprehensive guides for integrating AI capabilities and building UI components with shadcn/ui in your Next.js project.
+
 ## Important Notes
 
 - **Use Bun**: This project uses Bun, not npm/yarn/pnpm
@@ -212,3 +232,7 @@ See `.cursorrules` for complete guidelines.
 - **Next.js Beta**: Be aware this is Next.js 16 beta - some APIs may change
 - **Async APIs**: Remember to await cookies(), headers(), params in Next.js 16
 - **App Router Only**: This project uses App Router exclusively, no Pages Router
+
+## Unsure?
+
+If you are unsure about any aspect of the project, refer to the relevant documentation in the `/LLMS` directory or consult the development guidelines outlined in this file and `/CLAUDE_RULES.md` `.cursorrules`. Always prioritize following established conventions and best practices to maintain code quality and consistency.
