@@ -1,7 +1,3 @@
-Here's a more advanced, solo-founder and SaaS-friendly README you can use to replace the default template for your Next.js 16 starter repo. This version is tailored for technical users building modern products and highlights key developer experience and architectural priorities, as well as shadcn/ui setup and deployment options.
-
-***
-
 # Next.js 16 TypeScript Starter (with shadcn/ui)
 
 A modern Next.js 16 starter template for rapidly building production-grade TypeScript apps—ideal for solo founders, SaaS builders, and AI/automation projects. This repo integrates first-class [shadcn/ui](https://ui.shadcn.com/) components, sensible routing defaults, and robust DX tooling for fast iteration.
